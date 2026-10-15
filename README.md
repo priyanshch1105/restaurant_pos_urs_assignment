@@ -8,6 +8,8 @@ A full-stack restaurant point-of-sale app for menu administration, dine-in and t
 
 **Live API documentation:** [https://restaurantposursassignment.vercel.app/api-docs](https://restaurantposursassignment.vercel.app/api-docs)
 
+The assignment-facing app is deployed on Vercel. Its `/api/*` and `/api-docs/*` requests are forwarded to the Express backend using the `BACKEND_ORIGIN` environment variable, so users continue to use the Vercel URL and the same-origin Swagger server setting. Set `BACKEND_ORIGIN` in Vercel to the origin of the deployed Express service (for example, `https://your-api-service.onrender.com`, with no trailing slash). Deploy the backend as a Render Node web service with the repository root as its root directory, build command `npm install && npm run build`, and start command `npm start`. Configure `NODE_ENV=production`, `MONGODB_URI`, and a strong `JWT_SECRET` on that service. If `BACKEND_ORIGIN` is unset, requests are served locally by the combined Express/Next server.
+
 Run locally at `http://localhost:3000`.
 
 ## Features
@@ -75,6 +77,7 @@ For a production build, run `npm run build` and then `npm start`. Set `NODE_ENV=
 | `JWT_SECRET` | Production | Local development fallback | Secret used to sign and verify 8-hour JWTs. Set a long, random value in every deployed environment. |
 | `TAX_RATE` | No | `5` | Default tax percentage, from 0 to 100. |
 | `MAX_DISCOUNT` | No | `100000` | Default maximum permitted discount in the restaurant's currency. |
+| `BACKEND_ORIGIN` | Vercel deployment | Empty | Origin of the Express backend to which Vercel forwards `/api/*` and `/api-docs/*`; omit the trailing slash. Leave empty for the combined local server. |
 
 `.env` contains local secrets and is ignored by Git. Never commit production credentials.
 
