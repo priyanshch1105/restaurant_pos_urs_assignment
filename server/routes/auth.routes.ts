@@ -1,0 +1,13 @@
+import { Router } from "express";
+import { login, me, users, createStaff, updateStaff } from "../controllers/auth.controller";
+import { authRequired, allowRoles } from "../auth";
+import { asyncHandler } from "../middleware/async.middleware";
+import { validateBody } from "../middleware/validate.middleware";
+import { loginSchema, userCreateSchema, staffUpdateSchema } from "../validators/auth.validator";
+const router = Router();
+router.post("/login", validateBody(loginSchema), asyncHandler(login));
+router.get("/me", authRequired, me);
+router.get("/users", authRequired, allowRoles("Admin"), asyncHandler(users));
+router.post("/users", authRequired, allowRoles("Admin"), validateBody(userCreateSchema), asyncHandler(createStaff));
+router.patch("/users/:id", authRequired, allowRoles("Admin"), validateBody(staffUpdateSchema), asyncHandler(updateStaff));
+export default router;

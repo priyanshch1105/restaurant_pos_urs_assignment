@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { authRequired, allowRoles } from "../auth";
+import { list, detail, invoice, create, status, payment, items } from "../controllers/order.controller";
+import { asyncHandler } from "../middleware/async.middleware";
+import { validateBody } from "../middleware/validate.middleware";
+import { orderSchema, orderItemsUpdateSchema, paymentSchema, statusSchema } from "../validators/order.validator";
+const router = Router();
+router.use(authRequired);
+router.get("/", asyncHandler(list));
+router.get("/:id", asyncHandler(detail));
+router.get("/:id/invoice", asyncHandler(invoice));
+router.post("/", allowRoles("Staff"), validateBody(orderSchema), asyncHandler(create));
+router.patch("/:id/status", allowRoles("Staff"), validateBody(statusSchema), asyncHandler(status));
+router.post("/:id/payment", allowRoles("Staff"), validateBody(paymentSchema), asyncHandler(payment));
+router.patch("/:id/items", allowRoles("Staff"), validateBody(orderItemsUpdateSchema), asyncHandler(items));
+export default router;

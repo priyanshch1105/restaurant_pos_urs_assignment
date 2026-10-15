@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { authRequired, allowRoles } from "../auth";
+import { list, create, update, deactivate, reactivate } from "../controllers/menu.controller";
+import { asyncHandler } from "../middleware/async.middleware";
+import { validateBody } from "../middleware/validate.middleware";
+import { menuSchema } from "../validators/menu.validator";
+const router = Router();
+router.use(authRequired);
+router.get("/", asyncHandler(list));
+router.post("/", allowRoles("Admin"), validateBody(menuSchema), asyncHandler(create));
+router.put("/:id", allowRoles("Admin"), validateBody(menuSchema.partial()), asyncHandler(update));
+router.patch("/:id/deactivate", allowRoles("Admin"), asyncHandler(deactivate));
+router.patch("/:id/reactivate", allowRoles("Admin"), asyncHandler(reactivate));
+export default router;

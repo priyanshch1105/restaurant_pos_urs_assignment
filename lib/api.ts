@@ -1,0 +1,7 @@
+export type User = { id: string; name: string; email: string; role: "Admin" | "Staff"; active?: boolean };
+export type RestaurantSettings = { taxRate: number; maxDiscount: number };
+export type MenuItem = { id: string; name: string; category: string; price: number; available: boolean; active: boolean };
+export type Order = { id: string; orderNumber: string; type: "Dine-in" | "Takeaway"; tableNumber?: number; items: { menuItemId: string; name: string; price: number; quantity: number; lineTotal: number }[]; status: "Pending" | "Preparing" | "Ready" | "Completed"; subtotal: number; taxRate: number; tax: number; discount: number; total: number; paymentMethod?: "Cash" | "UPI"; paymentStatus: "Pending" | "Paid"; paymentAmount?: number; paidAt?: string; receivedBy?: string; createdAt: string };
+
+export async function api<T>(path: string, options: RequestInit = {}): Promise<T> { const token = typeof window !== "undefined" ? localStorage.getItem("restopos_token") : null; const response = await fetch(path, { ...options, headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(options.headers || {}) } }); const body = await response.json().catch(() => ({})); if (!response.ok) throw new Error(body.message || "Request failed"); return body as T; }
+export const money = (value: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value);

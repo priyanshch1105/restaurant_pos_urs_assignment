@@ -1,0 +1,1 @@
+export { menuSchema } from "../validation";
