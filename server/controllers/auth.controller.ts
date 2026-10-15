@@ -9,7 +9,8 @@ export async function createStaff(req: Request, res: Response) { const user = aw
 export async function updateStaff(req: Request, res: Response) {
   if (req.body.active === false && req.params.id === req.user!.id) return res.status(400).json({ message: "You cannot deactivate your own account." });
   const updates = { ...req.body, ...(req.body.email ? { email: req.body.email.trim().toLowerCase() } : {}) };
-  const user = await updateStaffUser(req.params.id, updates);
+  const staffId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const user = await updateStaffUser(staffId, updates);
   if (!user) return res.status(404).json({ message: "Staff account not found." });
   const action = updates.active === false ? "user.deactivated" : updates.active === true ? "user.reactivated" : "user.updated";
   await createAuditLog({ actorId: req.user!.id, actorRole: req.user!.role, action, entityType: "user", entityId: user.id, metadata: { role: user.role } });

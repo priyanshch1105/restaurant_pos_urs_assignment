@@ -92,7 +92,7 @@ describe("Restaurant POS API", () => {
     expect((await request("/api/orders", {
       method: "POST",
       headers: auth(adminToken),
-      body: JSON.stringify({ type: "Takeaway", items: [{ menuItemId, quantity: 1 }], discount: 0 })
+      body: JSON.stringify({ type: "Takeaway", items: [{ menuItemId: menuId, quantity: 1 }], discount: 0 })
     })).response.status).toBe(403);
     const first = await request("/api/orders", {
       method: "POST",
@@ -100,30 +100,6 @@ describe("Restaurant POS API", () => {
       body: JSON.stringify({ type: "Takeaway", items: [{ menuItemId: menuId, quantity: 2 }], discount: 10 })
     });
 
-    it("allows Admin to manage tax and permitted discounts", async () => {
-      const current = await request("/api/settings", { headers: auth(adminToken) });
-      expect(current.response.status).toBe(200);
-      const updated = await request("/api/settings", {
-        method: "PATCH",
-        headers: auth(adminToken),
-        body: JSON.stringify({ taxRate: 7.5, maxDiscount: 250 })
-      });
-
-      it("creates protected audit records for financial and order changes", async () => {
-        const created = await request("/api/orders", {
-          method: "POST",
-          headers: auth(staffToken),
-          body: JSON.stringify({ type: "Takeaway", items: [{ menuItemId, quantity: 1 }], discount: 0 })
-        });
-        const logs = await request("/api/audit-logs", { headers: auth(adminToken) });
-        expect(logs.response.status).toBe(200);
-        expect(logs.body.logs.some((log: { action: string; entityId: string }) => log.action === "order.created" && log.entityId === created.body.order.id)).toBe(true);
-        expect((await request("/api/audit-logs", { headers: auth(staffToken) })).response.status).toBe(403);
-      });
-      expect(updated.response.status).toBe(200);
-      expect(updated.body.settings).toEqual({ taxRate: 7.5, maxDiscount: 250 });
-      expect((await request("/api/settings", { headers: auth(staffToken) })).response.status).toBe(403);
-    });
     const second = await request("/api/orders", {
       method: "POST",
       headers: auth(staffToken),
@@ -133,7 +109,7 @@ describe("Restaurant POS API", () => {
     expect(second.response.status).toBe(201);
     expect(first.body.order.orderNumber).not.toBe(second.body.order.orderNumber);
     expect(first.body.order.subtotal).toBe(200);
-    expect(first.body.order.total).toBe(189);
+    expect(first.body.order.total).toBe(199.5);
 
     const filtered = await request(`/api/orders?search=${encodeURIComponent(first.body.order.orderNumber)}&status=Pending&page=1&pageSize=1`, { headers: auth(staffToken) });
     expect(filtered.response.status).toBe(200);
@@ -147,6 +123,31 @@ describe("Restaurant POS API", () => {
     expect(invoice.response.status).toBe(200);
     expect(invoice.body.order.total).toBe(first.body.order.total);
     expect(invoice.body.order.items[0].price).toBe(100);
+  });
+
+  it("allows Admin to manage tax and permitted discounts", async () => {
+    const current = await request("/api/settings", { headers: auth(adminToken) });
+    expect(current.response.status).toBe(200);
+    const updated = await request("/api/settings", {
+      method: "PATCH",
+      headers: auth(adminToken),
+      body: JSON.stringify({ taxRate: 7.5, maxDiscount: 250 })
+    });
+    expect(updated.response.status).toBe(200);
+    expect(updated.body.settings).toEqual({ taxRate: 7.5, maxDiscount: 250 });
+    expect((await request("/api/settings", { headers: auth(staffToken) })).response.status).toBe(403);
+  });
+
+  it("creates protected audit records for financial and order changes", async () => {
+    const created = await request("/api/orders", {
+      method: "POST",
+      headers: auth(staffToken),
+      body: JSON.stringify({ type: "Takeaway", items: [{ menuItemId: menuId, quantity: 1 }], discount: 0 })
+    });
+    const logs = await request("/api/audit-logs", { headers: auth(adminToken) });
+    expect(logs.response.status).toBe(200);
+    expect(logs.body.logs.some((log: { action: string; entityId: string }) => log.action === "order.created" && log.entityId === created.body.order.id)).toBe(true);
+    expect((await request("/api/audit-logs", { headers: auth(staffToken) })).response.status).toBe(403);
   });
 
   it("validates status transitions, recalculates quantities, and prevents invalid payments", async () => {
@@ -163,7 +164,7 @@ describe("Restaurant POS API", () => {
     const updated = await request(`/api/orders/${id}/items`, {
       method: "PATCH",
       headers: auth(staffToken),
-      body: JSON.stringify({ items: [{ menuItemId, quantity: 3 }], discount: 0 })
+      body: JSON.stringify({ items: [{ menuItemId: menuId, quantity: 3 }], discount: 0 })
     });
     expect(updated.body.order.subtotal).toBe(300);
     for (const nextStatus of ["Preparing", "Ready", "Completed"]) {

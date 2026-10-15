@@ -111,7 +111,13 @@ npm run build     # Build Next.js and compile the server
 
 ## API documentation
 
-The OpenAPI 3.0 specification is in [`docs/openapi.yaml`](docs/openapi.yaml). Import it into Postman or Swagger UI/Editor to browse and try the API. The API base URL is `/api`; protected endpoints require `Authorization: Bearer <token>`. Obtain a token from `POST /api/auth/login`.
+Interactive Swagger UI is served by the same Express application as the API:
+
+- Local URL: `http://localhost:3000/api-docs`
+- OpenAPI source: [`docs/openapi.yaml`](docs/openapi.yaml)
+- Validate the specification: `npm run docs:validate`
+
+In Swagger UI, expand `POST /auth/login`, submit a real account's email and password, and copy the returned `token`. Click **Authorize** and paste the JWT token by itself; do not paste a password and do not add the `Bearer ` prefix. Swagger UI applies `Authorization: Bearer <token>` to protected requests. Use **Try it out** to send requests to this application. The OpenAPI server path is relative (`/api`), so Swagger targets the same origin in development and deployment. Swagger documentation is currently public; it does not weaken API authentication or role checks.
 
 ### Main routes
 
