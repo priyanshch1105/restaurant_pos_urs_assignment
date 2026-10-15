@@ -4,7 +4,7 @@
 
 A full-stack restaurant point-of-sale app for menu administration, dine-in and takeaway ordering, server-calculated bills, payment recording, order tracking, invoices, sales reporting, and staff account administration. Admin and Staff capabilities are enforced by the Express API.
 
-**Live app:** [https://restaurantposursassignment.vercel.app/](https://restaurantposursassignment.vercel.app/)
+**Live app:** [https://restaurant-pos-urs-assignment.onrender.com](https://restaurant-pos-urs-assignment.onrender.com)
 
 **Live API documentation:** [https://restaurant-pos-urs-assignment.onrender.com/api-docs](https://restaurant-pos-urs-assignment.onrender.com/api-docs)
 
