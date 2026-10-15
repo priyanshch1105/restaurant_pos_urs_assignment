@@ -6,7 +6,7 @@ A full-stack restaurant point-of-sale app for menu administration, dine-in and t
 
 **Live app:** [https://restaurantposursassignment.vercel.app/](https://restaurantposursassignment.vercel.app/)
 
-**Live API documentation:** [https://restaurantposursassignment.vercel.app/api-docs](https://restaurantposursassignment.vercel.app/api-docs)
+**Live API documentation:** [https://restaurant-pos-urs-assignment.onrender.com/api-docs](https://restaurant-pos-urs-assignment.onrender.com/api-docs)
 
 The assignment-facing app is deployed on Vercel. Its `/api/*` and `/api-docs/*` requests are forwarded to the Express backend using the `BACKEND_ORIGIN` environment variable, so users continue to use the Vercel URL and the same-origin Swagger server setting. Set `BACKEND_ORIGIN` in Vercel to the origin of the deployed Express service (for example, `https://your-api-service.onrender.com`, with no trailing slash). Deploy the backend as a Render Node web service with the repository root as its root directory, build command `npm install && npm run build`, and start command `npm start`. Configure `NODE_ENV=production`, `MONGODB_URI`, and a strong `JWT_SECRET` on that service. If `BACKEND_ORIGIN` is unset, requests are served locally by the combined Express/Next server.
 
@@ -120,7 +120,7 @@ npm run build     # Build Next.js and compile the server
 
 Interactive Swagger UI is served by the same Express application as the API:
 
-- Live URL: [https://restaurantposursassignment.vercel.app/api-docs](https://restaurantposursassignment.vercel.app/api-docs)
+- Live URL: [https://restaurant-pos-urs-assignment.onrender.com/api-docs](https://restaurant-pos-urs-assignment.onrender.com/api-docs)
 - Local URL: `http://localhost:3000/api-docs`
 - OpenAPI source: [`docs/openapi.yaml`](docs/openapi.yaml)
 - Validate the specification: `npm run docs:validate`
