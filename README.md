@@ -4,7 +4,11 @@
 
 A full-stack restaurant point-of-sale app for menu administration, dine-in and takeaway ordering, server-calculated bills, payment recording, order tracking, invoices, sales reporting, and staff account administration. Admin and Staff capabilities are enforced by the Express API.
 
-**Live deployment:** Not configured or published. Run locally at `http://localhost:3000`.
+**Live app:** [https://restaurantposursassignment.vercel.app/](https://restaurantposursassignment.vercel.app/)
+
+**Live API documentation:** [https://restaurantposursassignment.vercel.app/api-docs](https://restaurantposursassignment.vercel.app/api-docs)
+
+Run locally at `http://localhost:3000`.
 
 ## Features
 
@@ -113,6 +117,7 @@ npm run build     # Build Next.js and compile the server
 
 Interactive Swagger UI is served by the same Express application as the API:
 
+- Live URL: [https://restaurantposursassignment.vercel.app/api-docs](https://restaurantposursassignment.vercel.app/api-docs)
 - Local URL: `http://localhost:3000/api-docs`
 - OpenAPI source: [`docs/openapi.yaml`](docs/openapi.yaml)
 - Validate the specification: `npm run docs:validate`
